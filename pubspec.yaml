@@ -1,0 +1,41 @@
+name: flutter_food_log_app
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.2.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  google_fonts: ^8.0.2
+  font_awesome_flutter: ^11.0.0
+  supabase_flutter: ^2.12.0 #ใช้สำหรับการเชื่อมต่อกับ Supabase เพื่อทำงาน
+  intl: ^0.20.2 #ใช้จัดรูปแบบวันที่และตัวเลข เช่นค่าเงิน เป็นต้น
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  icons_launcher: ^3.0.3
+
+icons_launcher:
+  image_path: "assets/icon/icon.png"
+  platforms:
+    android:
+      enable: true
+    ios:
+      enable: true
+
+
+  flutter_lints: ^6.0.0
+flutter:
+
+  uses-material-design: true
+  assets :
+    - assets/images/
+
+    
