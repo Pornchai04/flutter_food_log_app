@@ -17,15 +17,14 @@ class _AddFoodUiState extends State<AddFoodUi> {
   TextEditingController foodPersonCtrl = TextEditingController();
   TextEditingController foodDateCtrl = TextEditingController();
 
-  //ตัวแปรเก็บมื้ออาหารที่เลือก
+  //เก็บข้อมูลมื้ออาหารที่เลือก
   String foodMeal = 'เช้า';
 
-  //ตัวแปรเก็บวันที่กิน
+  //เก็บข้อมูลวันที่ที่กิน
   DateTime? foodDate;
 
-  //เมธอดเปิดปฏิทินให้ผู้ใช้เลือก แล้วกำหนดค่าวันที่เลือกให้กับตัวแปร foodDate ที่สร้างไว้กับแสดงที่ TextField
+  //เปิดปฏิทินให้ผู้ใช้เลือกวันที่ ใน foodDate ที่ Create กับ result บน TextField
   Future<void> pickDate() async {
-    //เปิดปฏิทิน
     DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -35,24 +34,25 @@ class _AddFoodUiState extends State<AddFoodUi> {
 
     if (picked != null) {
       setState(() {
-        //กําหนดค่าให้กับตัวแปร
         foodDate = picked;
-        //แสดงที่ TextField
+
         foodDateCtrl.text = DateFormat('yyyy-MM-dd').format(picked);
       });
     }
   }
 
-  //เมธอดบันทึกข้อมูลไปที่ Supabase
+  //เมธอดบันทึกข้อมูลไปที่ supabase
   void saveFood() async {
-    // Validate UI ตรวจสอบหน้าจอเบื้องต้น
+
+    //Validate UI ตรวจสอบหน้าจอเบื้องต้น
     if (foodNameCtrl.text.isEmpty ||
         foodPriceCtrl.text.isEmpty ||
         foodPersonCtrl.text.isEmpty ||
         foodDateCtrl.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('กรุณากรอกข้อมูลให้ครบ'),
+          content: Text(
+          'กรุณากรอกข้อมูลให้ครบถ้วน'),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -60,7 +60,7 @@ class _AddFoodUiState extends State<AddFoodUi> {
       return;
     }
 
-    // แพ็กข้อมูล
+    //แพ็กข้อมูล
     Food food = Food(
       foodName: foodNameCtrl.text,
       foodMeal: foodMeal,
@@ -69,54 +69,46 @@ class _AddFoodUiState extends State<AddFoodUi> {
       foodDate: foodDate!.toIso8601String(),
     );
 
-    // ส่งไปบันทึกที่ Supabase ผ่าน SupabaseService
-    //สร้าง instance/object/ตัวแทน ของ SupabaseService
-    final service = SupabaseServices();
+    //ส่งข้อมูลไปที่ Supabase
+    final service = SupabaseService();
     await service.insertFood(food);
 
-    // แจ้งผลการทํางานกับผู้ใช้
+    //แสดงข้อความบันทึกสำเร็จ
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('บันทึกข้อมูลเรียบร้อยแล้ว'),
+        content: Text('บันทึกข้อมูลสำเร็จ'),
         backgroundColor: Colors.green,
         duration: Duration(seconds: 2),
       ),
     );
-
-    // กลับไปหน้า ShowAllFoodUi
-    Navigator.pop(context);
+      //กลับไปหน้า ShowAllFoodUi
+      Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.red,
-        title: Text(
-          'กินกัน LOG (เพิ่มรายการ)',
-          style: TextStyle(
-            color: Colors.white,
+          backgroundColor:  Colors.red[400],
+          title: Text(
+            'เพิ่มรายการอาหาร',
+            style: TextStyle(
+              color: Colors.white,
+            ),
           ),
-        ),
-        centerTitle: true,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: Colors.white,
-          ),
-        ),
-      ),
+          centerTitle: true,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: Colors.white,
+            ),
+          )),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.only(
-            top: 40,
-            bottom: 50,
-            left: 40,
-            right: 40,
-          ),
+          padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
           child: Center(
             child: Column(
               children: [
@@ -169,7 +161,7 @@ class _AddFoodUiState extends State<AddFoodUi> {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
-                            foodMeal == 'เช้า' ? Colors.green : Colors.grey,
+                            foodMeal == 'เช้า' ? Colors.blue : Colors.grey,
                       ),
                       child: Text(
                         'เช้า',
@@ -186,7 +178,7 @@ class _AddFoodUiState extends State<AddFoodUi> {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
-                            foodMeal == 'กลางวัน' ? Colors.green : Colors.grey,
+                            foodMeal == 'กลางวัน' ? Colors.blue : Colors.grey,
                       ),
                       child: Text(
                         'กลางวัน',
@@ -203,7 +195,7 @@ class _AddFoodUiState extends State<AddFoodUi> {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
-                            foodMeal == 'เย็น' ? Colors.green : Colors.grey,
+                            foodMeal == 'เย็น' ? Colors.blue : Colors.grey,
                       ),
                       child: Text(
                         'เย็น',
@@ -220,7 +212,7 @@ class _AddFoodUiState extends State<AddFoodUi> {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
-                            foodMeal == 'ว่าง' ? Colors.green : Colors.grey,
+                            foodMeal == 'ว่าง' ? Colors.blue : Colors.grey,
                       ),
                       child: Text(
                         'ว่าง',
@@ -236,7 +228,7 @@ class _AddFoodUiState extends State<AddFoodUi> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'กินไปเท่าไหร่',
+                    'ทั้งหมดกี่บาท',
                     style: TextStyle(
                       fontSize: 18,
                     ),
@@ -295,8 +287,11 @@ class _AddFoodUiState extends State<AddFoodUi> {
                     suffixIcon: Icon(Icons.calendar_today),
                   ),
                   onTap: () {
-                    //เปิดปฏิทิน ให้ผู้ใช้เลือกแล้วเอามาแสดงที่ TextField นี้
+                    //เปิดปฏิทินให้ผู้ใช้เลือกวันที่
                     pickDate();
+                    //แสดงที่ TextField
+                    foodDateCtrl.text = DateFormat('yyyy-MM-dd')
+                        .format(foodDate ?? DateTime.now());
                   },
                 ),
                 SizedBox(height: 20),
@@ -315,17 +310,25 @@ class _AddFoodUiState extends State<AddFoodUi> {
                       50,
                     ),
                   ),
-                  child: Text(
-                    "บันทึก",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
+                  child: Text("บันทึก",
+                      style: TextStyle(
+                        color: Colors.white,
+                      )),
                 ),
                 SizedBox(height: 10),
                 // ปุ่มยกเลิก
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    //เคลียร์ค่าใน TextField
+                    setState(() {
+                      foodNameCtrl.clear();
+                      foodPriceCtrl.clear();
+                      foodPersonCtrl.clear();
+                      foodDateCtrl.clear();
+                      foodMeal = 'เช้า';
+                      foodDate = null;
+                    });
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
                     shape: RoundedRectangleBorder(
@@ -336,12 +339,10 @@ class _AddFoodUiState extends State<AddFoodUi> {
                       50,
                     ),
                   ),
-                  child: Text(
-                    "ยกเลิก",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
+                  child: Text("ยกเลิก",
+                      style: TextStyle(
+                        color: Colors.white,
+                      )),
                 ),
               ],
             ),

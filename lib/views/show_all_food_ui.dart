@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_food_log_app/models/food.dart';
 import 'package:flutter_food_log_app/services/supabase_services.dart';
 import 'package:flutter_food_log_app/views/add_food_ui.dart';
+import 'package:flutter_food_log_app/views/update_del_food_ui.dart';
 
 class ShowAllFoodUi extends StatefulWidget {
   const ShowAllFoodUi({super.key});
@@ -14,11 +15,11 @@ class _ShowAllFoodUiState extends State<ShowAllFoodUi> {
   //สร้างตัวแปรเพื่อเก็บข้อมูลที่จะนำไปแสดงใน ListView ในส่วนของ body
   List<Food> foods = [];
   //สร้าง object/instance ของ SupabaseService
-  final service = SupabaseServices();
+  final service = SupabaseService();
   //สร้างเมธอดสำหรับการดึงข้อมูลทั้งหมดจาก Supabase
   void loadAllFoods() async {
     //เรียกใช้ฟังก์ชัน getAllFoods จาก SupabaseService
-    final data = await service.getAllFood();
+    final data = await service.getAllFoods();
     setState(() {
       //เก็บข้อมูลที่ได้จากฟังก์ชัน getAllFoods ไว้ในตัวแปร foods
       foods = data;
@@ -36,7 +37,7 @@ class _ShowAllFoodUiState extends State<ShowAllFoodUi> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 80, 152, 215),
+        backgroundColor:  Colors.red[400],
         title: Text(
           'กินแซ๊บบบบบแซ่บ LOG',
           style: TextStyle(
@@ -73,8 +74,18 @@ class _ShowAllFoodUiState extends State<ShowAllFoodUi> {
                       bottom: 5,
                     ),
                     child: ListTile(
-                      onTap: () {},
-                      leading: Image.asset('assets/images/food_img.png'),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UpdateDelFoodUi(food: foods[index]),
+                          ),
+                        ).then((value) {
+                          //เมื่อกลับมาจากหน้าที่แก้ไขข้อมูลแล้ว ให้เรียกใช้เมธอด loadAllFoods เพื่อรีเฟรชข้อมูลใน ListView
+                          loadAllFoods();});
+                      },
+                      leading: Image.asset(
+                        'assets/images/food_img.png'),
                       title: Text(
                         'กิน ${foods[index].foodName}',
                       ),
@@ -83,10 +94,9 @@ class _ShowAllFoodUiState extends State<ShowAllFoodUi> {
                       ),
                       trailing: Icon(
                         Icons.info,
-                        color: Colors.red,
+                      color: Colors.red,
                       ),
-                      tileColor:
-                          index % 2 == 0 ? Colors.blue[50] : Colors.blue[100],
+                      tileColor:index % 2 == 0 ? Colors.red[50] : const Color.fromARGB(255, 250, 184, 184),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5),
                       ),
@@ -101,13 +111,14 @@ class _ShowAllFoodUiState extends State<ShowAllFoodUi> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => AddFoodUi()))
-              .then((value) {
-            loadAllFoods();
-          });
+              context, 
+              MaterialPageRoute(
+                builder: (context) => AddFoodUi()))
+                .then((value) {loadAllFoods();});
         },
-        child: Icon(Icons.add),
-        backgroundColor: const Color.fromARGB(255, 80, 152, 215),
+        child: Icon(Icons.add,
+        color: Colors.white,),
+        backgroundColor:  Colors.red[400],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
